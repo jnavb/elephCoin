@@ -1,4 +1,4 @@
-import SHA256 from 'crypto-js/sha256';
+const SHA256 = require('crypto-js/sha256');
 
 class Transaction{
     constructor(fromAddress, toAddress, amount){
@@ -17,11 +17,11 @@ class Block {
         this.nonce = 0;
     }
 
-    calculateHash = () => {
+    calculateHash() {
         return SHA256(this.previousHash + this.timestamp + JSON.stringify(this.transactions) + this.nonce).toString();
     }
 
-    mineBlock = (difficulty) => {
+    mineBlock(difficulty) {
         while (this.hash.substring(0, difficulty) !== Array(difficulty + 1).join("0")) {
             this.nonce++;
             this.hash = this.calculateHash();
@@ -40,15 +40,15 @@ class Blockchain{
         this.miningReward = 100;
     }
 
-    createGenesisBlock = () => {
+    createGenesisBlock() {
         return new Block(Date.parse("2017-01-01"), [], "0");
     }
 
-    getLatestBlock = () => {
+    getLatestBlock() {
         return this.chain[this.chain.length - 1];
     }
 
-    minePendingTransactions = (miningRewardAddress) => {
+    minePendingTransactions(miningRewardAddress) {
         let block = new Block(Date.now(), this.pendingTransactions, this.getLatestBlock().hash);
         block.mineBlock(this.difficulty);
 
@@ -60,11 +60,11 @@ class Blockchain{
         ];
     }
 
-    createTransaction = (transaction) => {
+    createTransaction(transaction) {
         this.pendingTransactions.push(transaction);
     }
 
-    getBalanceOfAddress = (address) => {
+    getBalanceOfAddress(address) {
         let balance = 0;
 
         for(const block of this.chain){
@@ -82,7 +82,7 @@ class Blockchain{
         return balance;
     }
 
-    isChainValid = () => {
+    isChainValid() {
         for (let i = 1; i < this.chain.length; i++){
             const currentBlock = this.chain[i];
             const previousBlock = this.chain[i - 1];
@@ -100,3 +100,8 @@ class Blockchain{
     }
 }
 
+module.exports = {
+    Blockchain: Blockchain,
+    Block: Block,
+    Transaction: Transaction
+}
