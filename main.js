@@ -22,7 +22,7 @@ class Block {
     }
 
     mineBlock(difficulty) {
-        while (this.hash.substring(0, difficulty) !== '0'.repeat(difficulty + 1)) {
+        while (this.hash.substring(0, difficulty) !== '0'.repeat(difficulty)) {
             this.nonce++;
             this.hash = this.calculateHash();
         }
